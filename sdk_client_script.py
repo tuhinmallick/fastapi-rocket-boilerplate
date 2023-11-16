@@ -7,14 +7,13 @@ url = "http://localhost:8000/openapi.json"
 destination_file = "openapi.json"
 response = requests.get(url)
 
-if response.status_code == 200:
-    with open(destination_file, "wb") as file:
-        file.write(response.content)
-else:
+if response.status_code != 200:
     raise Exception(
         f"Error downloading the file. Response code: {response.status_code}"
     )
 
+with open(destination_file, "wb") as file:
+    file.write(response.content)
 file_path = Path("./openapi.json")
 openapi_content = json.loads(file_path.read_text())
 

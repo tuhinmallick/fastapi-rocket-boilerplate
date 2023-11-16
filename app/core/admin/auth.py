@@ -12,10 +12,7 @@ class AdminAuth(AuthenticationBackend):
         username, password = form["username"], form["password"]
 
         # Validate username/password credentials
-        if (
-            not username == settings.admin_user
-            or not password == settings.admin_pass
-        ):
+        if username != settings.admin_user or password != settings.admin_pass:
             return False
 
         # And update session

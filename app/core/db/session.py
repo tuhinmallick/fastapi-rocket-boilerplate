@@ -111,8 +111,7 @@ class DBSessionMeta(type):
             statement = select(model).where(
                 key == value, model.deleted == False
             )
-            result = self.session.exec(statement).one()
-            return result
+            return self.session.exec(statement).one()
         except NoResultFound:
             return None
 
@@ -125,8 +124,7 @@ class DBSessionMeta(type):
             .offset(offset)
             .limit(limit)
         )
-        result = self.session.exec(statement).all()
-        return result
+        return self.session.exec(statement).all()
 
     def update(self, item: any) -> object:
         """Create or modify"""
@@ -142,12 +140,9 @@ class DBSessionMeta(type):
         return True
 
     def count(self, model: any) -> int:
-        result = len(
-            self.session.exec(
-                select(model).where(model.deleted == False)
-            ).all()
+        return len(
+            self.session.exec(select(model).where(model.deleted == False)).all()
         )
-        return result
 
 
 class DBSession(metaclass=DBSessionMeta):

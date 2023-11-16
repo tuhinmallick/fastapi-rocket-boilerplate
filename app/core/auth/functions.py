@@ -20,7 +20,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_jwt_token(data: dict, expiration_delta: timedelta) -> str:
     expiration = datetime.utcnow() + expiration_delta
-    data.update({"exp": expiration})
+    data["exp"] = expiration
     return jwt.encode(data, settings.secret_key, algorithm=settings.algorithm)
 
 
@@ -43,9 +43,7 @@ def get_current_admin(token: str = Depends(oauth2_scheme)) -> str | None:
             token, settings.secret_key, algorithms=[settings.algorithm]
         )
         username = payload.get("sub")
-        if username is None:
-            return None
-        return username
+        return None if username is None else username
     except jwt.ExpiredSignatureError:
         return None
     except jwt.JWTError:
@@ -72,11 +70,7 @@ def verify_refresh_token(token: str) -> dict | None:
         payload = jwt.decode(
             token, settings.secret_key, algorithms=[settings.algorithm]
         )
-        if payload.get("scopes") == "refresh_token":
-            return payload
-        else:
-            # Refresh token invalid
-            return None
+        return payload if payload.get("scopes") == "refresh_token" else None
     except jwt.ExpiredSignatureError:
         # Refresh token expired
         return None
