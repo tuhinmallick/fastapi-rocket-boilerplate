@@ -66,18 +66,10 @@ async def check_health():
 
     # DB check
     db_status = check_db_connection()
-    if db_status:
-        db_status = ok_code
-    else:
-        db_status = ko_code
-
+    db_status = ok_code if db_status else ko_code
     # Celery check
     celery_status = celery.control.inspect().ping()
-    if celery_status:
-        celery_status = ok_code
-    else:
-        celery_status = ko_code
-
+    celery_status = ok_code if celery_status else ko_code
     # RabbitMQ check
     try:
         connection = pika.BlockingConnection(

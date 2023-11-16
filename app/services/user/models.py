@@ -24,9 +24,7 @@ class RevokedToken(ModelCore, table=True):
         Check if the refresh token was previously revoked (blacklisted)
         """
         # TODO: Create a relationship between User and RevokedToken
-        if RevokedToken.get_one(key=RevokedToken.token, value=refresh_token):
-            return True
-        return False
+        return bool(RevokedToken.get_one(key=RevokedToken.token, value=refresh_token))
 
 
 class User(ModelCore, table=True):
